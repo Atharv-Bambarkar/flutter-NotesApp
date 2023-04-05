@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,10 +35,9 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _subtitlesController = TextEditingController();
 
   final CollectionReference _notes =
-  FirebaseFirestore.instance.collection('notes');
+      FirebaseFirestore.instance.collection('notes');
 
   Future<void> _create([DocumentSnapshot? documentSnapshot]) async {
-
     await showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 TextField(
                   controller: _titleController,
-                  decoration: const InputDecoration(labelText: 'title'),
+                  decoration: const InputDecoration(labelText: 'Title'),
                 ),
                 TextField(
                   /*keyboardType:
@@ -74,7 +74,8 @@ class _HomePageState extends State<HomePage> {
                     final String title = _titleController.text;
                     final String subtitles = _subtitlesController.text;
                     if (subtitles != null) {
-                      await _notes.add({"title": title, "subtitles": subtitles });
+                      await _notes
+                          .add({"title": title, "subtitles": subtitles});
 
                       _titleController.text = '';
                       _subtitlesController.text = '';
@@ -85,12 +86,11 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           );
-
         });
   }
+
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
     if (documentSnapshot != null) {
-
       _titleController.text = documentSnapshot['title'];
       _subtitlesController.text = documentSnapshot['subtitles'];
     }
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 TextField(
                   controller: _titleController,
-                  decoration: const InputDecoration(labelText: 'title'),
+                  decoration: const InputDecoration(labelText: 'Title'),
                 ),
                 TextField(
                   /*keyboardType:
@@ -125,13 +125,12 @@ class _HomePageState extends State<HomePage> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  child: const Text( 'Update'),
+                  child: const Text('Update'),
                   style: ElevatedButton.styleFrom(primary: Colors.greenAccent),
                   onPressed: () async {
                     final String title = _titleController.text;
-                    final  String subtitles = _subtitlesController.text;
+                    final String subtitles = _subtitlesController.text;
                     if (subtitles != null) {
-
                       await _notes
                           .doc(documentSnapshot!.id)
                           .update({"title": title, "subtitles": subtitles});
@@ -150,8 +149,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> _delete(String productId) async {
     await _notes.doc(productId).delete();
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('You have successfully deleted a Notes')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You have successfully deleted a Note')));
   }
 
   @override
@@ -169,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                 itemCount: streamSnapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   final DocumentSnapshot documentSnapshot =
-                  streamSnapshot.data!.docs[index];
+                      streamSnapshot.data!.docs[index];
                   return Card(
                     margin: const EdgeInsets.all(10),
                     child: ListTile(
@@ -181,12 +180,10 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             IconButton(
                                 icon: const Icon(Icons.edit),
-                                onPressed: () =>
-                                    _update(documentSnapshot)),
+                                onPressed: () => _update(documentSnapshot)),
                             IconButton(
                                 icon: const Icon(Icons.delete),
-                                onPressed: () =>
-                                    _delete(documentSnapshot.id)),
+                                onPressed: () => _delete(documentSnapshot.id)),
                           ],
                         ),
                       ),
@@ -205,11 +202,8 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () => _create(),
           backgroundColor: Colors.greenAccent,
-          child: const Icon(Icons.add)
-          ,
-
+          child: const Icon(Icons.add),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat
-    );
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
   }
 }
